@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.MODE === 'development' ? 'https://chat-zilla.onrender.com/' : '/api',
+    baseURL: (import.meta.env.VITE_API_BASE_URL) || 'https://chat-zilla-backend.onrender.com/api',
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true, // if you need to send cookies
+    withCredentials: true,
 });
 
 // Optional: Add interceptors for requests
