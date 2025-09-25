@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.MODE === 'development' ? 'http://localhost:5000/api' : '/api',
+    baseURL: import.meta.env.MODE === 'development' ? 'https://chat-zilla.onrender.com/' : '/api',
     headers: {
         'Content-Type': 'application/json',
     },
