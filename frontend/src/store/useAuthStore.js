@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import axiosInstance from "../lib/axios";
 
+const baseURL = import.meta.env.MODE === 'development' ? 'http://localhost:5000/api' : '/api';
+
 export const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigningUp: false,
@@ -12,23 +14,23 @@ export const useAuthStore = create((set, get) => ({
 
   // ✅ Check if user is logged in
   checkAuth: async () => {
-  set({ isCheckingAuth: true });
-  try {
-    const res = await axiosInstance.get("/auth/check", { withCredentials: true });
-    set({ authUser: res.data.user }); // backend must return { user: {...} }
-  } catch (error) {
-    console.error("Check auth error:", error.response?.data || error.message);
-    set({ authUser: null });
-  } finally {
-    set({ isCheckingAuth: false });
-  }
-},
+    set({ isCheckingAuth: true });
+    try {
+      const res = await axiosInstance.get("/auth/check");
+      set({ authUser: res.data.user });
+    } catch (error) {
+      console.error("Check auth error:", error.response?.data || error.message);
+      set({ authUser: null });
+    } finally {
+      set({ isCheckingAuth: false });
+    }
+  },
 
   // ✅ Signup
   signup: async (data) => {
     set({ isSigningUp: true });
     try {
-      const res = await axiosInstance.post("/auth/signup", data, { withCredentials: true });
+      const res = await axiosInstance.post("/auth/signup", data);
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
@@ -37,7 +39,7 @@ export const useAuthStore = create((set, get) => ({
       if (res.data.user) {
         set({ authUser: res.data.user });
       } else {
-        await get().checkAuth(); // fallback if backend doesn’t send user
+        await get().checkAuth();
       }
 
       toast.success("Signup successful! 🎉");
@@ -54,7 +56,7 @@ export const useAuthStore = create((set, get) => ({
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
-      const res = await axiosInstance.post("/auth/login", data, { withCredentials: true });
+      const res = await axiosInstance.post("/auth/login", data);
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
@@ -79,7 +81,7 @@ export const useAuthStore = create((set, get) => ({
   // ✅ Logout
   logout: async () => {
     try {
-      await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
+      await axiosInstance.post("/auth/logout");
 
       localStorage.removeItem("token");
       set({ authUser: null });
@@ -91,18 +93,18 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-    // ✅ Update Profile
-    updateProfile: async (data) => {
-  set({ isUpdatingProfile: true });
-  try {
-    const res = await axiosInstance.put("/auth/profile", data, { withCredentials: true });
-    set({ authUser: res.data }); // ✅ backend sends user object directly
-    toast.success("Profile updated successfully ✅");
-  } catch (error) {
-    console.error("Update profile error:", error.response?.data || error.message);
-    toast.error("Profile update failed ❌");
-  } finally {
-    set({ isUpdatingProfile: false });
-  }
-},
+  // ✅ Update Profile
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
+    try {
+      const res = await axiosInstance.put("/auth/profile", data);
+      set({ authUser: res.data });
+      toast.success("Profile updated successfully ✅");
+    } catch (error) {
+      console.error("Update profile error:", error.response?.data || error.message);
+      toast.error("Profile update failed ❌");
+    } finally {
+      set({ isUpdatingProfile: false });
+    }
+  },
 }));
