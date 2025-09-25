@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-base-content;
+    background-color: var(--app-bg, #f3f4f6);
+    color: var(--app-text, #111827);
+  }
+  :root {
+    --app-bg: #f3f4f6; /* page background */
+    --app-surface: #ffffff; /* cards/nav surfaces */
+    --app-text: #111827; /* base text */
+    --app-primary: #4f46e5; /* primary accents */
+  }
+}
+
+/* Make common surfaces follow the global variables */
+.navbar,
+.bg-base-100,
+.card,
+.shadow-xl,
+.surface {
+  background-color: var(--app-surface, #ffffff) !important;
+  color: var(--app-text, #111827) !important;
+}
+
+.bg-base-200 {
+  background-color: var(--app-bg, #f3f4f6) !important;
+}
+
+.text-primary,
+.border-primary,
+.bg-primary,
+.btn-primary {
+  color: var(--app-primary, #4f46e5) !important;
+  border-color: var(--app-primary, #4f46e5) !important;
+}
+
+.bg-primary,
+.btn-primary {
+  background-color: var(--app-primary, #4f46e5) !important;
+}
