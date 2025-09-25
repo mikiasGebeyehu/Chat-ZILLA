@@ -38,13 +38,15 @@ app.use('/api/message', messageRoutes);
 
 // Serve React frontend in production
 if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../../frontend/dist'); // Adjust if needed
-  app.use(express.static(frontendPath));
+    // Absolute path from backend/src to frontend/dist
+    const frontendPath = path.join(__dirname, '../../frontend/dist'); 
+    app.use(express.static(frontendPath));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  });
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'index.html'));
+    });
 }
+
 
 // Start server & initialize DB + Socket
 server.listen(PORT, async () => {
