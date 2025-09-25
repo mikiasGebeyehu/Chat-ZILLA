@@ -25,14 +25,25 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? 'https://chat-zilla-frontend.onrender.com'
-      : 'http://localhost:5173',
-    credentials: true,
-  })
-);
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN 
+  || (process.env.NODE_ENV === 'production' 
+      ? 'https://chat-zilla-frontend-mhba.onrender.com'
+      : 'http://localhost:5173');
+
+app.use(cors({
+  origin: FRONTEND_ORIGIN,
+  credentials: true,
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+}));
+
+// Handle preflight for all routes
+app.options('*', cors({
+  origin: FRONTEND_ORIGIN,
+  credentials: true,
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);
